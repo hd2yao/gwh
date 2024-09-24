@@ -3,10 +3,12 @@ package main
 import (
     "fmt"
     "net/http"
+
+    "github.com/hd2yao/gwh/router"
 )
 
 func main() {
-    engine := New()
+    engine := router.New()
     engine.GET("/", func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
     })
