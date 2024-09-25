@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     "net/http"
 
     "github.com/hd2yao/gwh"
@@ -9,13 +8,17 @@ import (
 
 func main() {
     engine := gwh.New()
-    engine.GET("/", func(w http.ResponseWriter, r *http.Request) {
-        fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
+    engine.GET("/", func(c *gwh.Context) {
+        c.HTML(http.StatusOK, "<h1>Hello Gwh</h1>")
     })
-    engine.GET("/hello", func(w http.ResponseWriter, r *http.Request) {
-        for k, v := range r.Header {
-            fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
-        }
+    engine.GET("/hello", func(c *gwh.Context) {
+        c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
+    })
+    engine.POST("/login", func(c *gwh.Context) {
+        c.JSON(http.StatusOK, gwh.H{
+            "username": c.PostForm("username"),
+            "password": c.PostForm("password"),
+        })
     })
     engine.Run(":9999")
 }
