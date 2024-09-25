@@ -4,11 +4,11 @@ import (
     "fmt"
     "net/http"
 
-    "github.com/hd2yao/gwh/router"
+    "github.com/hd2yao/gwh"
 )
 
 func main() {
-    engine := router.New()
+    engine := gwh.New()
     engine.GET("/", func(w http.ResponseWriter, r *http.Request) {
         fmt.Fprintf(w, "URL.Path = %q\n", r.URL.Path)
     })
