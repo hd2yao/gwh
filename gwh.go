@@ -1,25 +1,23 @@
 package gwh
 
 import (
-    "fmt"
     "net/http"
 )
 
 type HandlerFunc func(*Context)
 
 type Engine struct {
-    router map[string]HandlerFunc
+    router *router
 }
 
 func New() *Engine {
     return &Engine{
-        router: make(map[string]HandlerFunc),
+        router: newRouter(),
     }
 }
 
 func (e *Engine) addRoute(method, pattern string, handler HandlerFunc) {
-    key := method + "-" + pattern
-    e.router[key] = handler
+    e.router.addRoute(method, pattern, handler)
 }
 
 func (e *Engine) GET(pattern string, handler HandlerFunc) {
@@ -34,14 +32,9 @@ func (e *Engine) Run(addr string) error {
     return http.ListenAndServe(addr, e)
 }
 
-// 实现 net/http 中 Handler 接口，构造自定义路由
+// ServeHTTP 实现 net/http 中 Handler 接口，构造自定义路由
 func (e *Engine) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    key := r.Method + "-" + r.URL.Path
-    handler, ok := e.router[key]
-    if !ok {
-        //fmt.Fprintf(w, "404 NOT FOUND: %s\n", r.URL)
-        ReturnError(w, http.StatusBadRequest, fmt.Errorf("not found: %s", r.URL))
-        return
-    }
-    handler(w, r)
+    // 构造 Context
+    context := newContext(w, r)
+    e.router.handle(context)
 }
