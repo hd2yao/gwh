@@ -5,7 +5,7 @@ import (
     "net/http"
 )
 
-type HandlerFunc func(http.ResponseWriter, *http.Request)
+type HandlerFunc func(*Context)
 
 type Engine struct {
     router map[string]HandlerFunc
