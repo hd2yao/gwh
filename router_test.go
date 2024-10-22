@@ -71,3 +71,20 @@ func TestGetRoutes(t *testing.T) {
         t.Fatal("the number of routes shoule be 4")
     }
 }
+
+// 下面的测试用例说明，会覆盖节点的 pattern
+func TestAddRoutes(t *testing.T) {
+    r := newRouter()
+    r.addRoute("GET", "/", nil)
+    r.addRoute("GET", "/hello/:name", nil)
+    nodes := r.getRoutes("GET")
+    for i, n := range nodes {
+        fmt.Println(i+1, n)
+    }
+    fmt.Println("------------------------------------------")
+    r.addRoute("GET", "/hello/hai", nil)
+    nodes = r.getRoutes("GET")
+    for i, n := range nodes {
+        fmt.Println(i+1, n)
+    }
+}
