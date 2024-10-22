@@ -14,6 +14,16 @@ func main() {
     engine.GET("/hello", func(c *gwh.Context) {
         c.String(http.StatusOK, "hello %s, you're at %s\n", c.Query("name"), c.Path)
     })
+
+    engine.GET("/hello/:name", func(c *gwh.Context) {
+        // expect /hello/geektutu
+        c.String(http.StatusOK, "hello %s, you're at %s\n", c.Param("name"), c.Path)
+    })
+
+    engine.GET("/assets/*filepath", func(c *gwh.Context) {
+        c.JSON(http.StatusOK, gwh.H{"filepath": c.Param("filepath")})
+    })
+
     engine.POST("/login", func(c *gwh.Context) {
         c.JSON(http.StatusOK, gwh.H{
             "username": c.PostForm("username"),
